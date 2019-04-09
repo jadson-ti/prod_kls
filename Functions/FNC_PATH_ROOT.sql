@@ -1,0 +1,61 @@
+-- --------------------------------------------------------
+-- Servidor:                     cm-kls.cluster-cu0eljf5y2ht.us-east-1.rds.amazonaws.com
+-- Versão do servidor:           5.6.10-log - MySQL Community Server (GPL)
+-- OS do Servidor:               Linux
+-- HeidiSQL Versão:              10.1.0.5484
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+-- Copiando estrutura para função prod_kls.FNC_PATH_ROOT
+DELIMITER //
+CREATE DEFINER=`fsantini`@`%` FUNCTION `FNC_PATH_ROOT`(
+	`DIRECTORYID` INT,
+	`RETORNO` VARCHAR(50)
+
+
+) RETURNS varchar(255) CHARSET utf8
+BEGIN
+
+DECLARE V_FULLPATH VARCHAR(255);
+DECLARE V_DIRNAME VARCHAR(255);
+DECLARE V_PARENT INT;
+DECLARE V_ID INT;
+DECLARE V_ID_ATUAL INT;
+DECLARE V_PROXIMO INT;
+
+SET V_PROXIMO=DIRECTORYID;
+SET V_PARENT=NULL;
+SET V_FULLPATH='';
+
+DIRLIST: LOOP
+
+SELECT id, name, parent INTO V_ID, V_DIRNAME, V_PARENT FROM mdl_unifiedcloset_directory WHERE id=V_PROXIMO;
+IF V_PARENT=0 THEN
+SET V_FULLPATH=CONCAT(V_DIRNAME);
+LEAVE DIRLIST;
+END IF;
+SET V_PROXIMO=V_PARENT;
+
+END LOOP DIRLIST;
+
+SET V_FULLPATH=REPLACE(V_FULLPATH,'//','/');
+
+IF (RETORNO='id') THEN 
+	RETURN V_ID;
+END IF;
+
+IF (RETORNO='name') THEN 
+	RETURN V_FULLPATH;
+END IF;
+
+END//
+DELIMITER ;
+
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

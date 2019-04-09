@@ -1,0 +1,70 @@
+-- --------------------------------------------------------
+-- Servidor:                     cm-kls.cluster-cu0eljf5y2ht.us-east-1.rds.amazonaws.com
+-- Versão do servidor:           5.6.10-log - MySQL Community Server (GPL)
+-- OS do Servidor:               Linux
+-- HeidiSQL Versão:              10.1.0.5484
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+-- Copiando estrutura para tabela prod_kls.anh_aluno_matricula
+CREATE TABLE IF NOT EXISTS `anh_aluno_matricula` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_MATRICULA_ATUAL` bigint(20) NOT NULL,
+  `ID_PES_CUR_DISC` bigint(20) NOT NULL,
+  `ID_PESSOA_TURMA` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `UNIDADE` varchar(10) DEFAULT NULL,
+  `CURSO` varchar(10) DEFAULT NULL,
+  `USERNAME` varchar(30) NOT NULL,
+  `SHORTNAME` varchar(50) NOT NULL,
+  `ROLE` varchar(50) NOT NULL,
+  `TUTOR` varchar(30) DEFAULT NULL,
+  `GRUPO` varchar(50) NOT NULL,
+  `DATA_MATRICULA` date NOT NULL,
+  `ORIGEM` varchar(20) CHARACTER SET latin1 DEFAULT NULL,
+  `SIGLA` varchar(5) CHARACTER SET latin1 NOT NULL DEFAULT '',
+  PRIMARY KEY (`ID`,`SIGLA`),
+  UNIQUE KEY `UK_anh_aluno_matricula_grupo` (`ID`,`SIGLA`,`USERNAME`,`SHORTNAME`,`GRUPO`),
+  KEY `idx_grupo` (`GRUPO`),
+  KEY `idx_matricula` (`ID_MATRICULA_ATUAL`),
+  KEY `idx_sigla` (`SIGLA`),
+  KEY `idx_shortname` (`SHORTNAME`),
+  KEY `idx_usercurso` (`SHORTNAME`,`USERNAME`),
+  KEY `idx_unidade_curso` (`UNIDADE`,`CURSO`,`TUTOR`),
+  KEY `idx_username` (`USERNAME`),
+  KEY `idx_tutor` (`TUTOR`),
+  KEY `idx_tu` (`TUTOR`,`USERNAME`),
+  KEY `idx_shortname_grupo` (`SHORTNAME`,`GRUPO`)
+) ENGINE=InnoDB AUTO_INCREMENT=4729580 DEFAULT CHARSET=utf8
+/*!50500 PARTITION BY LIST  COLUMNS(SIGLA)
+(PARTITION KLS VALUES IN ('KLS') ENGINE = InnoDB,
+ PARTITION DI VALUES IN ('DI') ENGINE = InnoDB,
+ PARTITION DIP VALUES IN ('DIP') ENGINE = InnoDB,
+ PARTITION DIBV VALUES IN ('DIBV') ENGINE = InnoDB,
+ PARTITION DIBP VALUES IN ('DIBP') ENGINE = InnoDB,
+ PARTITION TCCV VALUES IN ('TCCV') ENGINE = InnoDB,
+ PARTITION TCCP VALUES IN ('TCCP') ENGINE = InnoDB,
+ PARTITION ESTV VALUES IN ('ESTV') ENGINE = InnoDB,
+ PARTITION ESTP VALUES IN ('ESTP') ENGINE = InnoDB,
+ PARTITION EDV VALUES IN ('EDV') ENGINE = InnoDB,
+ PARTITION EDP VALUES IN ('EDP') ENGINE = InnoDB,
+ PARTITION NPJV VALUES IN ('NPJV') ENGINE = InnoDB,
+ PARTITION NPJP VALUES IN ('NPJP') ENGINE = InnoDB,
+ PARTITION AMI VALUES IN ('AMI') ENGINE = InnoDB,
+ PARTITION AMP VALUES IN ('AMP') ENGINE = InnoDB,
+ PARTITION SCD VALUES IN ('SCD') ENGINE = InnoDB,
+ PARTITION AUTOLOGIN VALUES IN ('EDCL') ENGINE = InnoDB,
+ PARTITION PVDV VALUES IN ('PVDV') ENGINE = InnoDB,
+ PARTITION PVDP VALUES IN ('PVDP') ENGINE = InnoDB,
+ PARTITION HAMPP VALUES IN ('HAMPP') ENGINE = InnoDB,
+ PARTITION HIBV VALUES IN ('HIBV') ENGINE = InnoDB,
+ PARTITION HAMIP VALUES IN ('HAMIP') ENGINE = InnoDB) */;
+
+-- Exportação de dados foi desmarcado.
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

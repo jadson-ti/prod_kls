@@ -1,0 +1,60 @@
+-- --------------------------------------------------------
+-- Servidor:                     cm-kls.cluster-cu0eljf5y2ht.us-east-1.rds.amazonaws.com
+-- Versão do servidor:           5.6.10-log - MySQL Community Server (GPL)
+-- OS do Servidor:               Linux
+-- HeidiSQL Versão:              10.1.0.5484
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+-- Copiando estrutura para função prod_kls.PRC_TBL_LOG
+DELIMITER //
+CREATE DEFINER=`fsantini`@`%` FUNCTION `PRC_TBL_LOG`(
+	`P_INT_ID_LOG` INT,
+	`P_STR_OBJETO` VARCHAR(100),
+	`P_STR_TABELA` VARCHAR(50)
+
+) RETURNS int(11)
+BEGIN
+	
+	DECLARE ID_LOG_			INT(10);
+	DECLARE CODE_ 				VARCHAR(50) DEFAULT 'SUCESSO';
+	DECLARE MSG_ 				VARCHAR(200);
+	DECLARE REGISTROS_		BIGINT DEFAULT NULL;
+	
+	DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+	BEGIN
+	    	
+		GET DIAGNOSTICS CONDITION 1
+		CODE_ = RETURNED_SQLSTATE, MSG_ = MESSAGE_TEXT;
+		
+		SET CODE_ = CONCAT('ERRO - ', CODE_);
+	      
+	END;
+	
+	
+	IF P_INT_ID_LOG IS NULL THEN
+		INSERT INTO tbl_prc_log
+		SELECT
+			DATABASE(), P_STR_OBJETO, USER(), SYSDATE(), P_STR_STATUS;
+	ELSE
+		UPDATE tbl_prc_log
+		SET 	`STATUS` = CODE_,
+				 FIM	   = SYSDATE(),
+				 REGISTROS = IFNULL(REGISTROS_, (SELECT COUNT(1) FROM P_STR_TABELA))
+		WHERE	 ID = P_INT_ID_LOG;
+	END IF;
+
+	SET ID_LOG_= LAST_INSERT_ID();
+	RETURN ID_LOG_;
+
+END//
+DELIMITER ;
+
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
